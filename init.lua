@@ -1,14 +1,18 @@
 -- 基础设置
-vim.g.mapleader = " "			-- 空格键是核心前缀键
-vim.opt.number = true			-- 显示行号
-vim.opt.relativenumber = true		-- 相对行号
-vim.opt.mouse = "a"			-- 允许鼠标
+vim.g.mapleader = " "			    -- 空格键是核心前缀键
+vim.opt.number = true			    -- 显示行号
+vim.opt.relativenumber = true	    -- 相对行号
+vim.opt.mouse = "a" 			    -- 允许鼠标
 vim.opt.clipboard = "unnamedplus"	-- 共享系统剪贴板
-vim.opt.tabstop = 4			-- Tab 宽度
-vim.opt.shiftwidth = 4			-- 缩进宽度
-vim.opt.expandtab = true		-- 将 Tab 转为空格
-vim.opt.ignorecase = true		-- 搜索忽略大小写
-vim.opt.smartcase = true		-- 智能大小写
+vim.opt.tabstop = 4			        -- Tab 宽度
+vim.opt.shiftwidth = 4			    -- 缩进宽度
+vim.opt.expandtab = true		    -- 将 Tab 转为空格
+vim.opt.ignorecase = true		    -- 搜索忽略大小写
+vim.opt.smartcase = true		    -- 智能大小写
+
+-- 快捷键
+vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float) -- 弹窗显示报错
+vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist) -- 列出所有报错
 
 -- 自动安装插件管理器 Lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
