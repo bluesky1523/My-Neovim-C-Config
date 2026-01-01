@@ -30,7 +30,26 @@ require("lazy").setup({
 		"folke/tokyonight.nvim",
 		lazy = false,
 		priority = 1000,
-		config = function() vim.cmd([[colorscheme tokyonight]])end
+		config = function()
+            require("tokyonight").setup({
+            style = "moon",
+
+            on_highlights = function(hl, c)
+                hl.Function = { fg = "#ffc777", bold = true }
+                hl.Special = { fg = "#ffdeb0", bold = true }
+
+                hl["@variable.parameter"] = { fg = "#aebfff", italic = true }
+
+                hl.Type = { fg = "#4fd6be", bold = true }
+                hl["@lsp.typemod.class.defaultLibrary.cpp"] = { fg = "#4fd6be", bold = true }
+
+                hl["@property"] = { fg = "#65bcff", bold = true }
+
+                hl["@type.builtin"] = { fg = "#b08aed", bold = true }
+            end,
+        })
+        vim.cmd([[colorscheme tokyonight]])
+    end
 	},
 
 	-- 状态栏
