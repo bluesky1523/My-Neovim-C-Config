@@ -45,7 +45,7 @@ require("lazy").setup({
 
                 hl["@property"] = { fg = "#65bcff", bold = true }
 
-                hl["@type.builtin"] = { fg = "#b08aed", bold = true }
+                hl["@type.builtin"] = { fg = "#8f4aff", bold = true }
             end,
         })
         vim.cmd([[colorscheme tokyonight]])
@@ -158,4 +158,18 @@ require("lazy").setup({
 		event = "InsertEnter",
 		opts = {}
 	},
+
+    -- Markdown 预览和美化
+    {
+        "iamcco/markdown-preview.nvim",
+        cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+        ft = { "markdown" },
+        build = function() vim.fn["mkdp#util#install"]() end,
+    },
+    {
+        "MeanderingProgrammer/render-markdown.nvim",
+        dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
+        ft = { "markdown" },
+        opts = {},
+    }
 })
