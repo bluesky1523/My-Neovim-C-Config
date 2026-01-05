@@ -9,6 +9,11 @@ vim.opt.shiftwidth = 4			    -- 缩进宽度
 vim.opt.expandtab = true		    -- 将 Tab 转为空格
 vim.opt.ignorecase = true		    -- 搜索忽略大小写
 vim.opt.smartcase = true		    -- 智能大小写
+-- 折叠基础设置
+vim.opt.foldcolumn = '1'            -- 在行号左侧显示一列折叠提示符
+vim.opt.foldlevel = 99              -- 打开文件时默认展开所有代码
+vim.opt.foldlevelstart = 99
+vim.opt.foldenable = true
 
 -- 快捷键
 vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float) -- 弹窗显示报错
@@ -171,5 +176,35 @@ require("lazy").setup({
         dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
         ft = { "markdown" },
         opts = {},
-    }
+    },
+
+    -- 代码折叠插件
+    {
+        "kevimhwang91/nvim-ufo",
+        dependencies = {
+            "kevinhwang91/promise-async",
+            "nvim-treesitter/nvim-treesitter"
+        },
+        event = "BufRead",
+        config = function()
+            require('ufo').setup({
+                provider_selector = function(buffnr, filetype, buftype)
+                    return { 'treesitter', 'indent' }
+                end
+            })
+
+            -- 快捷键映射
+            vim.keymap.set('n', 'zR', require('ufo').openAllFolds)          -- 打开所有折叠
+            vim.keymap.set('n', 'zM', require('ufo').closeAllFolds)         -- 关闭所有折叠
+            vim.keymap.set('n', 'zr', require('ufo').openFoldsExceptKinds)  -- 打开下一层折叠
+            vim.keymap.set('n', 'zm', require('ufo').closeFoldsWith)        -- 关闭下一层折叠
+
+            vim.keymap.set('n', 'K', function()
+                local winid = require('ufo').peekFoldedLinesUnderCursor()
+                if not winid then
+                    vim.lsp.buf.hover()
+                end
+            end)
+        end
+    },
 })
