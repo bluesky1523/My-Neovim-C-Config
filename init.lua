@@ -192,19 +192,6 @@ require("lazy").setup({
                     return { 'treesitter', 'indent' }
                 end
             })
-
-            -- 快捷键映射
-            vim.keymap.set('n', 'zR', require('ufo').openAllFolds)          -- 打开所有折叠
-            vim.keymap.set('n', 'zM', require('ufo').closeAllFolds)         -- 关闭所有折叠
-            vim.keymap.set('n', 'zr', require('ufo').openFoldsExceptKinds)  -- 打开下一层折叠
-            vim.keymap.set('n', 'zm', require('ufo').closeFoldsWith)        -- 关闭下一层折叠
-
-            vim.keymap.set('n', 'K', function()
-                local winid = require('ufo').peekFoldedLinesUnderCursor()
-                if not winid then
-                    vim.lsp.buf.hover()
-                end
-            end)
         end
     },
 })
