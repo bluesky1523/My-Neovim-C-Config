@@ -77,10 +77,16 @@ require("lazy").setup({
 	-- 模糊搜索（空格 + f 搜索文件 / 空格 + g 搜索文字）
 	{
 		'nvim-telescope/telescope.nvim', tag = '0.1.5',
-		dependencies = { 'nvim-lua/plenary.nvim' },
+		dependencies = {
+            'nvim-lua/plenary.nvim',
+            { "nvim-telescope/telescope-live-grep-args.nvim", version = "^1.0.0" },
+        },
+        config = function()
+            require("telescope").load_extension("live_grep_args")
+        end,
 		keys = {
 			{ "<leader>f", "<cmd>Telescope find_files<cr>", desc = "搜索文件名" },
-			{ "<leader>g", "<cmd>Telescope live_grep<cr>", desc = "搜索文件内容" },
+			{ "<leader>g", ":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>", desc = "搜索文件内容" },
 		},
 	},
 
