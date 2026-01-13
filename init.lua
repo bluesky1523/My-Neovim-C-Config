@@ -94,6 +94,7 @@ require("lazy").setup({
 	{
 		"nvim-treesitter/nvim-treesitter",
 		build = ":TSUpdate",
+        branch = "master",
 		config = function()
 			require("nvim-treesitter.configs").setup({
 				ensure_installed = { "c", "cpp", "lua", "python", "bash", "markdown" },
@@ -186,7 +187,7 @@ require("lazy").setup({
 
     -- 代码折叠插件
     {
-        "kevimhwang91/nvim-ufo",
+        "kevinhwang91/nvim-ufo",
         dependencies = {
             "kevinhwang91/promise-async",
             "nvim-treesitter/nvim-treesitter"
@@ -197,6 +198,17 @@ require("lazy").setup({
                 provider_selector = function(buffnr, filetype, buftype)
                     return { 'treesitter', 'indent' }
                 end
+            })
+        end
+    },
+
+    -- 显示当前所在的函数体
+    {
+        "nvim-treesitter/nvim-treesitter-context",
+        dependencies = { "nvim-treesitter/nvim-treesitter" },
+        config = function()
+            require("treesitter-context").setup({
+                enable = true
             })
         end
     },
