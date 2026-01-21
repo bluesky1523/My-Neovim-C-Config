@@ -152,7 +152,10 @@ require("lazy").setup({
             local lspconfig = require('lspconfig')
 
 			require('mason-lspconfig').setup({
-                ensure_installed = { "clangd", "lua_ls" },
+                ensure_installed = { 
+                    "clangd", "lua_ls",
+                    "html", "cssls", "ts_ls", "jsonls"
+                },
                 handlers = {
                     function(server_name)
                         require("lspconfig")[server_name].setup({
@@ -211,5 +214,49 @@ require("lazy").setup({
                 enable = true
             })
         end
+    },
+
+    -- Web开发：自动格式化（Prettier）
+    {
+        "stevearc/conform.nvim",
+        event = { "BufReadPre", "BufNewFile" },
+        config = function()
+            require("conform").setup({
+                formatters_by_ft = {
+                    javascript = { "prettier" },
+                    typescript = { "prettier" },
+                    css = { "prettier" },
+                    html = { "prettier" },
+                    json = { "prettier" },
+                    markdown = { "prettier" },
+                },
+                -- 保存时自动格式化
+                format_on_save = {
+                    lsp_fallback = true,
+                    async = false,
+                    timeout_ms = 500,
+                },
+            })
+        end,
+    },
+
+    -- Web 开发：自动闭合/重命名 HTML 标签
+    {
+        "windwp/nvim-ts-autotag",
+        config = function()
+            require('nvim-ts-autotag').setup()
+        end
+    },
+
+    -- Web 开发：显示 CSS 颜色代码 (如 #ffffff)
+    {
+        "NvChad/nvim-colorizer.lua",
+        event = "BufReadPre",
+        opts = {
+            user_default_options = {
+                tailwind = true, -- 如果以后用 tailwindcss 很有用
+                css = true,
+            },
+        },
     },
 })
