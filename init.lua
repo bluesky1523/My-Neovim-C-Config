@@ -135,11 +135,30 @@ require("lazy").setup({
             "L3MON4D3/LuaSnip",
             "saadparwaiz1/cmp_luasnip",
             "rafamadriz/friendly-snippets",
+            "onsails/lspkind.nvim",
         },
         config = function()
             local cmp = require("cmp")
+            local lspkind = require("lspkind")
             require("luasnip.loaders.from_vscode").lazy_load()
 
+            cmp.setup({
+                window = {
+                    completion = cmp.config.window.bordered({
+                        border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
+                        winhighlight = "Normal:Pmenu,FloatBorder:PmenuBorder,CursorLine:PmenuSel,Search:None",
+                    }),
+                    documentation = cmp.config.window.bordered({
+                        border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
+                        winhighlight = "Normal:Pmenu,FloatBorder:PmenuBorder,CursorLine:PmenuSel,Search:None",
+                    }),
+                },
+                formatting = {
+                    format = lspkind.cmp_format({
+                        mode = 'symbol_text',
+                    })
+                }
+            })
             cmp.setup({
                 mapping = cmp.mapping.preset.insert({
                     ['<C-n>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }),
@@ -267,16 +286,20 @@ require("lazy").setup({
         "folke/noice.nvim",
         event = "VeryLazy",
         opts = {
-            -- 这里的配置会让你的 LSP 悬浮框自动带上圆角
+            -- 这里的配置会让 LSP 悬浮框自动带上圆角
             lsp = {
                 override = {
                     ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-                    ["vim.lsp.util.set_formatting_op"] = true,
-                    ["formatting.hover"] = true,
-                },
+                    ["vim.lsp.util.stylize_markdown"] = true,
+                    ["cmp.entry.get_documentation"] = true,
+                }
+            },
+            popupmenu = {
+                enabled = true,
+                backend = "nui",
             },
             presets = {
-                bottom_search = true,         -- 使用底部搜索栏
+                --bottom_search = true,         -- 使用底部搜索栏
                 command_palette = true,       -- 命令行面板居中
                 long_message_to_split = true, -- 长消息放在 split 中
                 inc_rename = false,           -- 是否启用增量重命名
@@ -285,17 +308,7 @@ require("lazy").setup({
         },
         dependencies = {
             "MunifTanjim/nui.nvim",
-            -- 可选：通知增强插件
-            {
-                "rcarriga/nvim-notify",
-                config = function()
-                    require("notify").setup({
-                        background_colour = "#000000", -- 避免透明度导致的文字重叠
-                        render = "wrapped-compact",
-                    })
-                    vim.notify = require("notify")
-                end
-            },
-        }
+            "rcarriga/nvim-notify",
+        },
     },
 })
