@@ -119,7 +119,7 @@ require("lazy").setup({
         branch = "master",
         config = function()
             require("nvim-treesitter.configs").setup({
-                ensure_installed = { "c", "cpp", "lua", "python", "bash", "markdown", "markdown_inline", "vim", "vimdoc" },
+                ensure_installed = { "c", "cpp", "lua", "python", "bash", "markdown", "markdown_inline", "vim", "vimdoc", "cmake" },
                 highlight = { enable = true },
             })
         end
@@ -196,12 +196,19 @@ require("lazy").setup({
             require('mason-lspconfig').setup({
                 ensure_installed = {
                     "clangd", "lua_ls",
-                    "html", "cssls", "ts_ls", "jsonls"
+                    "html", "cssls", "ts_ls", "jsonls",
+                    "neocmake"
                 },
                 handlers = {
                     function(server_name)
                         require("lspconfig")[server_name].setup({
                             capabilities = capabilities
+                        })
+                    end,
+
+                    ["neocmake"] = function()
+                        require("lspconfig").neocmake.setup({
+                            capabilities = capabilities,
                         })
                     end,
                 }
