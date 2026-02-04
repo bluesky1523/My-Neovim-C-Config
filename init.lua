@@ -1,11 +1,8 @@
 -- 基础设置
 vim.g.mapleader = " "             -- 空格键是核心前缀键
 vim.opt.number = true             -- 显示行号
---vim.opt.relativenumber = true     -- 相对行号
 vim.opt.mouse = "a"               -- 允许鼠标
 vim.opt.clipboard = ""            -- 共享系统剪贴板
-vim.keymap.set({ "n", "v" }, "y", '"+y')
-vim.keymap.set("n", "yy", '"+yy')
 vim.opt.tabstop = 4               -- Tab 宽度
 vim.opt.shiftwidth = 4            -- 缩进宽度
 vim.opt.expandtab = true          -- 将 Tab 转为空格
@@ -18,38 +15,28 @@ vim.opt.foldlevelstart = 99
 vim.opt.foldenable = true
 
 -- 快捷键
-vim.keymap.set('n', 'gd', vim.lsp.buf.declaration, opts)    -- 跳转函数声明
-vim.keymap.set('n', 'gD', vim.lsp.buf.definition, opts)     -- 调到函数定义
+vim.keymap.set({ "n", "v" }, "y", '"+y')
+vim.keymap.set("n", "yy", '"+yy')
 
-vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float) -- 弹窗显示报错
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist) -- 列出所有报错
+vim.keymap.set('n', 'gd', "<cmd>Lspsaga goto_definition<CR>")           -- 跳转函数定义
+vim.keymap.set('n', 'gp', "<cmd>Lspsaga peek_definition<CR>")
+vim.keymap.set('n', 'gt', "<cmd>Lspsaga peek_type_definition<CR>")      -- 跳转类型
+vim.keymap.set('n', 'gT', "<cmd>Lspsaga goto_type_definition<CR>")      -- 跳转类型
+vim.keymap.set('n', 'grr', "<cmd>Lspsaga finder<CR>")                   -- 查找所有引用
+
+vim.keymap.set('n', '<leader>d', "<cmd>Lspsaga show_line_diagnostics<CR>") -- 弹窗显示报错
+vim.keymap.set('n', '<leader>q', "<cmd>Lspsaga show_buf_diagnostics<CR>")
+vim.keymap.set('n', '<leader>Q', "<cmd>Lspsaga show_workspace_diagnostics<CR>")
+vim.keymap.set('n', '[d', "<cmd>Lspsaga diagnostic_jump_prev<CR>")
+vim.keymap.set('n', ']d', "<cmd>Lspsaga diagnostic_jump_next<CR>")
+
+vim.keymap.set('n', '<leader>rm', "<cmd>Lspsaga rename<CR>")
+vim.keymap.set("n", "<leader>ca", "<cmd>Lspsaga code_action<CR>")
 vim.keymap.set('n', '<leader>h', function()
-    -- 获取当前 buffer 的 LSP 客户端
-    local bufnr = vim.api.nvim_get_current_buf()
-    local clients = vim.lsp.get_active_clients({ bufnr = bufnr })
-    local clangd_client = nil
-
-    -- 检查 clangd 是否在运行
-    for _, client in pairs(clients) do
-        if client.name == "clangd" then
-            clangd_client = client
-            break
-        end
-    end
-
-    if not clangd_client then
-        return vim.notify("Clangd 未启动，无法切换头文件", vim.log.levels.WARN)
-    end
-
-    -- 发送切换请求给 clangd
-    vim.lsp.buf_request(bufnr, 'textDocument/switchSourceHeader', {
-        uri = vim.uri_from_bufnr(bufnr)
-    }, function(err, result)
-        if err then return vim.notify("LSP 报错: " .. tostring(err), vim.log.levels.ERROR) end
-        if not result then return vim.notify("没找到对应的头文件/源文件", vim.log.levels.INFO) end
-
-        -- 如果找到了，就打开它
-        vim.cmd.edit(vim.uri_to_fname(result))
+    vim.lsp.buf_request(0, 'textDocument/switchSourceHeader', {
+        uri = vim.uri_from_bufnr(0)
+    }, function(err, res)
+        if res then vim.api.nvim_command('edit ' .. vim.uri_to_fname(res)) end
     end)
 end, { desc = "切换 C/H 文件" })
 
@@ -317,5 +304,16 @@ require("lazy").setup({
             "MunifTanjim/nui.nvim",
             "rcarriga/nvim-notify",
         },
+    },
+
+    -- LSP 增强交互
+    {
+        "nvimdev/lspsaga.nvim",
+        dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
+        config = function()
+            require("lspsaga").setup({
+                ui = { border = "rounded" }, 
+            })
+        end,
     },
 })
